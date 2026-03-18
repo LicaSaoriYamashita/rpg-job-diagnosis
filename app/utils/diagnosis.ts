@@ -10,7 +10,7 @@ export const questions = [
     ],
   },
   {
-    text: 'チームに不機嫌な人がいる。あなたは？',
+    text: 'チームに不機嫌な人がいる。\nあなたは？',
     choices: [
       { label: 'A', text: '不安になって、なんとか場を和ませようとする' },
       { label: 'B', text: '自分の機嫌は自分でとってほしい、と苛立つ' },
@@ -28,7 +28,7 @@ export const questions = [
     ],
   },
   {
-    text: '大きな問題が発覚して大焦り。取り急ぎの初動対応を終えたあと、頭をよぎるのは？',
+    text: '大きな問題が発覚して大焦り。\n取り急ぎの初動対応を終えたあと、頭をよぎるのは？',
     choices: [
       { label: 'A', text: 'とにかく動いて埋め合わせしなくては' },
       { label: 'B', text: '本当に自分のスコープだったのかを冷静に分析しなくては' },
@@ -55,7 +55,7 @@ export const questions = [
     ],
   },
   {
-    text: '誰も手を挙げない面倒なタスクが出てきた。あなたは？',
+    text: '誰も手を挙げない面倒なタスクが出てきた。\nあなたは？',
     choices: [
       { label: 'A', text: '場が固まるくらいなら、自分がやる' },
       { label: 'B', text: '適切な担当者を考え、指名する' },
@@ -64,7 +64,7 @@ export const questions = [
     ],
   },
   {
-    text: 'あなたが急に1週間休むことになった。何が一番気になる？',
+    text: 'あなたが急に1週間休むことになった。\n何が一番気になる？',
     choices: [
       { label: 'A', text: '外部との繋がりや情報が自分にしかわからない' },
       { label: 'B', text: '意思決定待ちでチームの作業が止まる' },
@@ -73,7 +73,7 @@ export const questions = [
     ],
   },
   {
-    text: 'チームで意見が割れ、空気が重くなってきた。このとき自分の頭の中で一番強い感情は？',
+    text: 'チームで意見が割れ、空気が重くなってきた。\nこのとき自分の頭の中で一番強い感情は？',
     choices: [
       { label: 'A', text: '誰かが決めなければならないなら、自分が決めてしまおうか' },
       { label: 'B', text: 'データが示す方向に進めていくのが良いに決まっている' },
@@ -82,7 +82,7 @@ export const questions = [
     ],
   },
   {
-    text: 'やってみたいことがある。でもリスクがある。あなたは？',
+    text: 'やってみたいことがある。でもリスクがある。\nあなたは？',
     choices: [
       { label: 'A', text: 'リスクは覚悟の上で、まず一歩踏み出す' },
       { label: 'B', text: '先のことは置いておいて、まずはアイデアをどんどん育てる' },
@@ -126,7 +126,7 @@ export const jobSkills: Record<string, Set<string>> = {
   遊び人: new Set(['発想力', '発信力']),
   盗賊: new Set(['人脈力', '問題把握力', '調整力']),
   賢者: new Set(['分析力', '戦略力', '問題把握力', '専門性']),
-  ニンジャ: new Set(['専門性', '実行力', '問題把握力', 'スピード']),
+  忍者: new Set(['専門性', '実行力', '問題把握力', 'スピード']),
   僧侶: new Set(['調整力', '継続力', '専門性']),
   武闘家: new Set(['実行力', '継続力', 'スピード']),
   戦士: new Set(['専門性', '問題把握力']),
@@ -136,7 +136,7 @@ export const jobSkills: Record<string, Set<string>> = {
 // レアリティ階層
 const rareTiers: string[][] = [
   ['勇者', 'ルーラー', '踊り子', '召喚士', 'ネクロマンサー'],
-  ['遊び人', '盗賊', '賢者', 'ニンジャ'],
+  ['遊び人', '盗賊', '賢者', '忍者'],
   ['僧侶', '武闘家', '戦士', '魔法使い'],
 ]
 
@@ -219,12 +219,12 @@ export function diagnose(answers: Record<string, string>): DiagnosisResult {
     tierIdx = 1
   }
 
-  // 【ミドル】通常一致判定（遊び人・賢者・ニンジャ）
+  // 【ミドル】通常一致判定（遊び人・賢者・忍者）
   if (!job) {
     const midJobs: Record<string, Set<string>> = {
       遊び人: new Set(['発想力', '発信力']),
       賢者: new Set(['分析力', '戦略力', '問題把握力', '専門性']),
-      ニンジャ: new Set(['専門性', '実行力', '問題把握力', 'スピード']),
+      忍者: new Set(['専門性', '実行力', '問題把握力', 'スピード']),
     }
     for (const [j, skills] of Object.entries(midJobs)) {
       if ([...skills].every(s => topSkills.has(s))) {
@@ -272,7 +272,7 @@ export function diagnose(answers: Record<string, string>): DiagnosisResult {
     const allJobs: Record<string, Set<string>> = {
       遊び人: new Set(['発想力', '発信力']),
       賢者: new Set(['分析力', '戦略力', '問題把握力', '専門性']),
-      ニンジャ: new Set(['専門性', '実行力', '問題把握力', 'スピード']),
+      忍者: new Set(['専門性', '実行力', '問題把握力', 'スピード']),
       僧侶: new Set(['調整力', '継続力', '専門性']),
       武闘家: new Set(['実行力', '継続力', 'スピード']),
       戦士: new Set(['専門性', '問題把握力']),

@@ -11,7 +11,10 @@ export default defineNuxtConfig({
 
   googleFonts: {
     families: {
-      'Noto Sans JP': [300, 400, 700],
+      'Noto Sans JP': [300, 400, 700, 900],
+      'Great Vibes': [400],
+      'Taprom': [400],
+      'League Gothic': [400],
     },
     display: 'swap',
   },
@@ -22,6 +25,7 @@ export default defineNuxtConfig({
       meta: [
         { name: 'description', content: '11の質問に答えて、あなたの職場でのRPGジョブを診断しよう' },
       ],
+
     },
   },
 

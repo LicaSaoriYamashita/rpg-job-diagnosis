@@ -1,11 +1,11 @@
 :root {
-  --bg: #F5F5F3;
+  --bg: #e8e2db;
   --card: #FFFFFF;
-  --border: #E8E8E6;
-  --text: #1A1A1A;
-  --text-sub: #888888;
-  --hover: #F0F0EE;
-  --accent: #1A1A1A;
+  --border: #e8e2db;
+  --text: #484848;
+  --text-sub: #787171;
+  --hover: #F8F3EE;
+  --accent: #484848;
   --rare: #7C3AED;
   --mid: #2563EB;
   --standard: #059669;
@@ -19,7 +19,14 @@
 }
 
 body {
-  background: var(--bg);
+  background-color: var(--bg);
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 14px,
+    rgba(72,72,72,0.08) 14px,
+    rgba(72,72,72,0.08) 15px
+  );
   color: var(--text);
   font-family: 'Noto Sans JP', system-ui, sans-serif;
   min-height: 100vh;
@@ -27,9 +34,13 @@ body {
 }
 
 .container {
-  max-width: 640px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 40px 20px;
+}
+
+.container--wide {
+  max-width: 1200px;
 }
 
 /* Card */
@@ -37,6 +48,24 @@ body {
   background: var(--card);
   border-radius: var(--radius);
   padding: 32px;
+  box-shadow: 0px 4px 24px 0px rgba(0, 0, 0, 0.05);
+  animation: card-appear 0.8s ease both;
+}
+
+@keyframes card-appear {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes item-slide-up {
+  from { transform: translateY(12px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
 }
 
 /* Buttons */
@@ -60,7 +89,7 @@ body {
   background: var(--text);
   color: white;
   padding: 14px 40px;
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .btn-primary:hover {
@@ -68,11 +97,11 @@ body {
 }
 
 .btn-outline {
-  background: transparent;
-  border: 1.5px solid var(--border);
+  background: var(--card);
+  border: 1.5px solid var(--text);
   color: var(--text);
   padding: 12px 24px;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .btn-outline:hover {
@@ -82,7 +111,7 @@ body {
 /* Rarity badges */
 .rarity-badge {
   display: inline-block;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 1px;
   padding: 4px 12px;
@@ -102,6 +131,14 @@ body {
 .rarity-standard {
   background: #ECFDF5;
   color: var(--standard);
+}
+
+/* Material Icons in buttons */
+.btn-icon {
+  font-size: 18px;
+  line-height: 1;
+  margin-right: 6px;
+  vertical-align: middle;
 }
 
 /* Transition */

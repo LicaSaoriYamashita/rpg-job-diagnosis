@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { diagnose } from '~/utils/diagnosis'
-import { jobData, jobRarity } from '~/utils/jobData'
+import { jobData, jobRarity, jobImages, jobEnglishNames } from '~/utils/jobData'
 
 const route = useRoute()
 const { getResult } = useSupabase()
 
+const lastMainJob = useState<string | null>('lastMainJob', () => null)
 const loading = ref(true)
 const notFound = ref(false)
 const mainJob = ref('')
@@ -13,11 +13,7 @@ const rarity = ref<'RARE' | 'MIDDLE' | 'STANDARD'>('STANDARD')
 const copied = ref(false)
 
 const jobInfo = computed(() => jobData[mainJob.value])
-
-const rarityClass = computed(() => {
-  const map: Record<string, string> = { RARE: 'rarity-rare', MIDDLE: 'rarity-mid', STANDARD: 'rarity-standard' }
-  return map[rarity.value] || ''
-})
+const englishName = computed(() => jobEnglishNames[mainJob.value] || mainJob.value)
 
 onMounted(async () => {
   const data = await getResult(route.params.id as string)
@@ -26,8 +22,8 @@ onMounted(async () => {
     loading.value = false
     return
   }
-
   mainJob.value = data.main_job
+  lastMainJob.value = data.main_job
   subJobs.value = data.sub_jobs
   rarity.value = jobRarity[data.main_job]?.tier || 'STANDARD'
   loading.value = false
@@ -58,58 +54,83 @@ useHead({
     </div>
 
     <div v-else-if="jobInfo" class="card result-card">
-      <div class="result-header">
-        <p class="result-eyebrow">YOUR JOB IS</p>
-        <h1 class="result-job-name">{{ mainJob }}</h1>
-      </div>
+      <div class="frame-outer">
+        <div class="frame-inner">
 
-      <div class="result-sections">
-        <div class="result-section">
-          <h3 class="section-label">得意なこと</h3>
-          <p class="section-body">{{ jobInfo.strength }}</p>
-        </div>
-        <div class="result-section">
-          <h3 class="section-label">苦手なこと</h3>
-          <p class="section-body">{{ jobInfo.weakness }}</p>
-        </div>
-        <div class="result-section">
-          <h3 class="section-label">チームでの役割</h3>
-          <p class="section-body">{{ jobInfo.role }}</p>
-        </div>
-        <div class="result-section">
-          <h3 class="section-label">相性のいいジョブ</h3>
-          <p class="section-body">{{ jobInfo.compat }}</p>
-        </div>
-        <div class="result-section">
-          <h3 class="section-label">このジョブが多いチームの注意点</h3>
-          <p class="section-body">{{ jobInfo.warningMany }}</p>
-        </div>
-        <div class="result-section">
-          <h3 class="section-label">このジョブがいないチームの注意点</h3>
-          <p class="section-body">{{ jobInfo.warningNone }}</p>
-        </div>
-      </div>
+          <!-- 上部：ヘッダー・画像・セクション -->
+          <div class="result-top">
+            <div class="result-header">
+              <h1 class="english-name">{{ englishName }}</h1>
+              <p class="job-name-jp">{{ mainJob }}</p>
+            </div>
 
-      <!-- Sub Jobs -->
-      <div class="sub-jobs-section">
-        <h3 class="section-label">転職候補ジョブ</h3>
-        <div class="sub-jobs">
-          <NuxtLink
-            v-for="sub in subJobs"
-            :key="sub"
-            :to="`/job/${sub}?from=${route.params.id}`"
-            class="sub-job-link"
-          >
-            {{ sub }}
-          </NuxtLink>
-        </div>
-      </div>
+            <div class="divider" />
 
-      <div class="result-actions">
-        <button class="btn btn-primary" @click="copyUrl">
-          {{ copied ? 'コピーしました！' : 'URLをコピー' }}
-        </button>
-        <NuxtLink to="/" class="btn btn-outline">もう一度診断する</NuxtLink>
+            <img v-if="jobImages[mainJob]" :src="jobImages[mainJob]" :alt="mainJob" class="job-image" />
+
+            <div class="result-sections">
+              <div class="result-section">
+                <h3 class="section-label">得意なこと</h3>
+                <p class="section-body">{{ jobInfo.strength }}</p>
+              </div>
+              <div class="result-section">
+                <h3 class="section-label">苦手なこと</h3>
+                <p class="section-body">{{ jobInfo.weakness }}</p>
+              </div>
+              <div class="result-section">
+                <h3 class="section-label">チームでの役割</h3>
+                <p class="section-body">{{ jobInfo.role }}</p>
+              </div>
+              <div class="result-section">
+                <h3 class="section-label">このジョブが多いチームの注意点</h3>
+                <p class="section-body">{{ jobInfo.warningMany }}</p>
+              </div>
+              <div class="result-section">
+                <h3 class="section-label">このジョブがいないチームの注意点</h3>
+                <p class="section-body">{{ jobInfo.warningNone }}</p>
+              </div>
+              <div class="result-section">
+                <h3 class="section-label">相性のいいジョブ</h3>
+                <div class="compat-jobs">
+                  <div v-for="c in jobInfo.compat" :key="c.job" class="compat-job">
+                    <img v-if="jobImages[c.job]" :src="jobImages[c.job]" :alt="c.job" class="compat-image" />
+                    <p class="compat-name">{{ c.job }}</p>
+                    <p class="section-body">{{ c.description }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider" />
+
+          <!-- 下部：転職候補・ボタン -->
+          <div class="result-bottom">
+            <div class="sub-jobs-section">
+              <h3 class="section-label">転職候補ジョブ</h3>
+              <div class="sub-jobs">
+                <NuxtLink
+                  v-for="sub in subJobs"
+                  :key="sub"
+                  :to="`/job/${sub}?from=${route.params.id}`"
+                  class="sub-job-card"
+                >
+                  <img v-if="jobImages[sub]" :src="jobImages[sub]" :alt="sub" class="sub-job-image" />
+                  <p class="sub-job-name">{{ sub }}</p>
+                </NuxtLink>
+              </div>
+            </div>
+
+            <div class="result-actions">
+              <button class="btn btn-outline" @click="copyUrl">
+                <span class="material-icons btn-icon">content_copy</span>
+                {{ copied ? 'コピーしました！' : 'URLをコピー' }}
+              </button>
+              <NuxtLink to="/" class="btn btn-primary">もう一度診断する</NuxtLink>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
   </div>
@@ -124,107 +145,224 @@ useHead({
 
 .loading-text {
   color: var(--text-sub);
-  font-size: 14px;
+  font-size: 16px;
 }
 
+/* スタガーアニメーション */
+.result-header  { animation: item-slide-up 0.5s ease both; animation-delay: 0.1s; }
+.result-top > .divider { animation: item-slide-up 0.5s ease both; animation-delay: 0.18s; }
+.job-image      { animation: item-slide-up 0.5s ease both; animation-delay: 0.26s; }
+.result-sections { animation: item-slide-up 0.5s ease both; animation-delay: 0.34s; }
+.result-bottom  { animation: item-slide-up 0.5s ease both; animation-delay: 0.44s; }
+
+/* カードフレーム */
 .result-card {
-  padding: 40px 32px;
+  padding: 12px;
+}
+
+.frame-outer {
+  border: 3px solid var(--border);
+  padding: 6px;
+}
+
+.frame-inner {
+  border: 2px solid var(--border);
+  padding: 28px 28px 52px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 52px;
+}
+
+/* 上部コンテンツ */
+.result-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
 }
 
 .result-header {
   text-align: center;
-  margin-bottom: 36px;
-  padding-bottom: 28px;
-  border-bottom: 1.5px solid var(--border);
 }
 
-.result-eyebrow {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 3px;
-  color: var(--text-sub);
-  margin-bottom: 10px;
+.english-name {
+  font-family: 'Taprom', cursive;
+  font-weight: 400;
+  font-size: 68px;
+  color: var(--text);
+  line-height: normal;
+  margin-bottom: -4px;
 }
 
-.result-job-name {
-  font-size: 40px;
-  font-weight: 700;
-  margin-bottom: 12px;
+.job-name-jp {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-weight: 900;
+  font-size: 24px;
+  color: var(--text);
 }
 
+.divider {
+  width: 566px;
+  max-width: 100%;
+  height: 1px;
+  background-color: var(--border);
+}
+
+.job-image {
+  width: 400px;
+  height: 400px;
+  object-fit: cover;
+  max-width: 100%;
+}
+
+/* セクション */
 .result-sections {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  margin-bottom: 28px;
+  gap: 40px;
+  width: 100%;
+}
+
+.result-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .section-label {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 700;
   color: var(--text);
-  letter-spacing: 0.5px;
-  margin-bottom: 6px;
+  line-height: 1.4;
 }
 
 .section-body {
-  font-size: 13px;
-  line-height: 1.8;
+  font-size: 14px;
+  line-height: 1.6;
   color: var(--text-sub);
+  white-space: pre-line;
+}
+
+/* 相性ジョブ */
+.compat-jobs {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.compat-job {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px;
+}
+
+.compat-image {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  max-width: 100%;
+}
+
+.compat-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+}
+
+/* 下部コンテンツ */
+.result-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 64px;
+  width: 100%;
 }
 
 .sub-jobs-section {
-  margin-bottom: 32px;
-  padding-top: 24px;
-  border-top: 1.5px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
 }
 
 .sub-jobs {
   display: flex;
-  gap: 8px;
-  margin-top: 10px;
+  gap: 9px;
 }
 
-.sub-job-link {
-  display: inline-flex;
+.sub-job-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  padding: 10px 20px;
-  background: var(--hover);
-  border-radius: 10px;
-  color: var(--text);
+  gap: 4px;
+  padding: 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.05);
   text-decoration: none;
+  transition: box-shadow 0.15s;
+}
+
+.sub-job-card:hover {
+  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.1);
+}
+
+.sub-job-image {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  max-width: 100%;
+}
+
+.sub-job-name {
   font-size: 14px;
   font-weight: 700;
-  transition: background 0.15s;
+  color: var(--text);
+  text-align: center;
 }
 
-.sub-job-link:hover {
-  background: var(--border);
-}
-
+/* ボタン */
 .result-actions {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  gap: 12px;
 }
 
 .result-actions .btn {
-  width: 100%;
+  width: 400px;
+  max-width: 100%;
   text-align: center;
   text-decoration: none;
+  box-shadow: 0px 2px 4px 0px rgba(72, 72, 72, 0.3);
 }
 
 @media (max-width: 480px) {
-  .result-card {
-    padding: 28px 20px;
+  .frame-inner {
+    padding: 20px 16px 36px;
+    gap: 36px;
   }
 
-  .result-job-name {
-    font-size: 32px;
+  .english-name {
+    font-size: 44px;
   }
 
-  .sub-jobs {
-    flex-direction: column;
+  .job-name-jp {
+    font-size: 20px;
+  }
+
+  .compat-image,
+  .sub-job-image {
+    width: 120px;
+    height: 120px;
   }
 }
 </style>
