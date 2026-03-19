@@ -177,8 +177,8 @@ export function diagnose(answers: Record<string, string>): DiagnosisResult {
 
   // ===== 特殊判定（レア→ミドル→スタンダードの順）=====
 
-  // 【レア】ネクロマンサー：問題把握力+実行力+専門性が全部上位
-  if (topSkills.has('問題把握力') && topSkills.has('実行力') && topSkills.has('専門性')) {
+  // 【レア】ネクロマンサー：問題把握力+実行力+専門性+分析力が全部上位
+  if (topSkills.has('問題把握力') && topSkills.has('実行力') && topSkills.has('専門性') && topSkills.has('分析力')) {
     job = 'ネクロマンサー'
     tierIdx = 0
   }
@@ -207,8 +207,8 @@ export function diagnose(answers: Record<string, string>): DiagnosisResult {
     tierIdx = -1
   }
 
-  // 【レア】踊り子：発信力が1位 かつ 発想力も上位
-  if (!job && skillRanking[0]?.[0] === '発信力' && topSkills.has('発想力')) {
+  // 【レア】踊り子：発信力がtop3以内 かつ 発想力も上位
+  if (!job && skillRanking.slice(0, 3).some(([s]) => s === '発信力') && topSkills.has('発想力')) {
     job = '踊り子'
     tierIdx = 0
   }
