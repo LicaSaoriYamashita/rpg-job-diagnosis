@@ -22,6 +22,9 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: 'ファンタジージョブ診断',
+      link: [
+        { rel: 'icon', type: 'image/png', href: '/favicon.png' },
+      ],
       meta: [
         { name: 'description', content: '11の質問に答えて、あなたの職場でのRPGジョブを診断しよう' },
         { property: 'og:site_name', content: 'ファンタジージョブ診断' },
