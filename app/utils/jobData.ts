@@ -208,3 +208,20 @@ export const jobRarity: Record<string, { tier: 'RARE' | 'MIDDLE' | 'STANDARD'; t
   戦士: { tier: 'STANDARD', tierIdx: 2 },
   魔法使い: { tier: 'STANDARD', tierIdx: 2 },
 }
+
+// OGP画像マッピング
+export const jobOgpImages: Record<string, string> = {
+  僧侶: '/ogp/ogp-result-1.png',
+  武闘家: '/ogp/ogp-result-2.png',
+  戦士: '/ogp/ogp-result-3.png',
+  魔法使い: '/ogp/ogp-result-4.png',
+  遊び人: '/ogp/ogp-result-5.png',
+  盗賊: '/ogp/ogp-result-6.png',
+  賢者: '/ogp/ogp-result-7.png',
+  忍者: '/ogp/ogp-result-8.png',
+  勇者: '/ogp/ogp-result-9.png',
+  ルーラー: '/ogp/ogp-result-10.png',
+  踊り子: '/ogp/ogp-result-11.png',
+  召喚士: '/ogp/ogp-result-12.png',
+  ネクロマンサー: '/ogp/ogp-result-13.png',
+}

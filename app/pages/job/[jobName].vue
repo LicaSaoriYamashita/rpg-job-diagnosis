@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { jobData, jobRarity, jobImages, jobEnglishNames } from '~/utils/jobData'
-import { jobSkills } from '~/utils/diagnosis'
-
 const route = useRoute()
 const jobName = computed(() => decodeURIComponent(route.params.jobName as string))
 const lastResultId = useState<string | null>('lastResultId', () => null)
@@ -9,15 +7,7 @@ const lastMainJob = useState<string | null>('lastMainJob', () => null)
 const fromId = computed(() => (route.query.from as string) || lastResultId.value || undefined)
 const fromJobName = computed(() => lastMainJob.value || '')
 const info = computed(() => jobData[jobName.value])
-const rarity = computed(() => jobRarity[jobName.value])
-const skills = computed(() => jobSkills[jobName.value] ? [...jobSkills[jobName.value]] : [])
 const englishName = computed(() => jobEnglishNames[jobName.value] || jobName.value)
-
-const rarityClass = computed(() => {
-  if (!rarity.value) return ''
-  const map: Record<string, string> = { RARE: 'rarity-rare', MIDDLE: 'rarity-mid', STANDARD: 'rarity-standard' }
-  return map[rarity.value.tier] || ''
-})
 
 useHead({
   title: computed(() => `${jobName.value} - 職場RPGジョブ診断`),
@@ -80,10 +70,10 @@ useHead({
           </div>
 
           <div class="job-actions">
-            <NuxtLink v-if="fromId" :to="`/result/${fromId}`" class="btn btn-outline job-btn" style="text-decoration: none;">
+            <NuxtLink v-if="fromId" :to="`/result/${fromId}`" class="btn btn-outline job-btn">
               <span class="material-icons btn-icon">arrow_back</span>診断結果にもどる
             </NuxtLink>
-            <NuxtLink to="/" class="btn btn-primary job-btn" style="text-decoration: none;">もう一度診断する</NuxtLink>
+            <NuxtLink to="/" class="btn btn-primary job-btn">もう一度診断する</NuxtLink>
           </div>
         </div>
       </div>
@@ -249,6 +239,7 @@ useHead({
 .job-btn {
   width: 400px;
   max-width: 100%;
+  text-decoration: none;
   box-shadow: 0px 2px 4px 0px rgba(72, 72, 72, 0.3);
 }
 

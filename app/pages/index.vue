@@ -15,6 +15,7 @@ const resultId = useState<string | null>('lastResultId', () => null)
 const lastMainJob = useState<string | null>('lastMainJob', () => null)
 
 const { saveResult } = useSupabase()
+const copied = ref(false)
 
 function startDiagnosis() {
   currentQuestion.value = 0
@@ -97,17 +98,9 @@ async function copyUrl() {
   }
 }
 
-const copied = ref(false)
-
 const currentQ = computed(() => questions[currentQuestion.value])
 
 const englishName = computed(() => result.value ? (jobEnglishNames[result.value.job] || result.value.job) : '')
-
-const rarityClass = computed(() => {
-  if (!result.value) return ''
-  const map: Record<string, string> = { RARE: 'rarity-rare', MIDDLE: 'rarity-mid', STANDARD: 'rarity-standard' }
-  return map[result.value.rarity] || ''
-})
 
 const jobInfo = computed(() => {
   if (!result.value) return null
@@ -311,8 +304,6 @@ const jobInfo = computed(() => {
 
 <style scoped>
 /* Title */
-.title-screen {}
-
 .title-card {
   text-align: center;
   padding: 12px;
@@ -411,7 +402,10 @@ const jobInfo = computed(() => {
 .mc-r4  { animation: svg-cw   5s linear infinite; }
 .mc-r5  { animation: svg-ccw  3s linear infinite; }
 
-.mc-dot { animation: pulse-center 2s ease-in-out infinite; }
+.mc-dot {
+  transform-origin: 120px 120px;
+  animation: pulse-center 2s ease-in-out infinite;
+}
 
 @keyframes svg-cw  {
   from { transform: rotate(0deg); }
@@ -423,8 +417,8 @@ const jobInfo = computed(() => {
 }
 
 @keyframes pulse-center {
-  0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
-  50%       { opacity: 0.9; transform: translate(-50%, -50%) scale(1.4); }
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50%       { opacity: 0.9; transform: scale(1.4); }
 }
 
 .loading-message {

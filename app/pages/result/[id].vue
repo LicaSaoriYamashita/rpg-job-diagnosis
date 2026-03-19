@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { jobData, jobRarity, jobImages, jobEnglishNames } from '~/utils/jobData'
+import { jobData, jobRarity, jobImages, jobEnglishNames, jobOgpImages } from '~/utils/jobData'
+
+const BASE_URL = 'https://rpg-job-diagnosis.vercel.app'
 
 const route = useRoute()
 const { getResult } = useSupabase()
@@ -16,11 +18,7 @@ const loading = computed(() => status.value === 'pending')
 const notFound = computed(() => status.value === 'success' && !resultData.value)
 const mainJob = computed(() => resultData.value?.main_job ?? '')
 const subJobs = computed(() => resultData.value?.sub_jobs ?? [])
-const rarity = computed(() => jobRarity[mainJob.value]?.tier ?? 'STANDARD')
-
-watchEffect(() => {
-  if (mainJob.value) lastMainJob.value = mainJob.value
-})
+watch(mainJob, (val) => { if (val) lastMainJob.value = val }, { immediate: true })
 
 const jobInfo = computed(() => jobData[mainJob.value])
 const englishName = computed(() => jobEnglishNames[mainJob.value] || mainJob.value)
@@ -33,27 +31,8 @@ async function copyUrl() {
   } catch {}
 }
 
-const ogpImages: Record<string, string> = {
-  僧侶:         '/ogp/ogp-result-1.png',
-  武闘家:       '/ogp/ogp-result-2.png',
-  戦士:         '/ogp/ogp-result-3.png',
-  魔法使い:     '/ogp/ogp-result-4.png',
-  遊び人:       '/ogp/ogp-result-5.png',
-  盗賊:         '/ogp/ogp-result-6.png',
-  賢者:         '/ogp/ogp-result-7.png',
-  忍者:         '/ogp/ogp-result-8.png',
-  勇者:         '/ogp/ogp-result-9.png',
-  ルーラー:     '/ogp/ogp-result-10.png',
-  踊り子:       '/ogp/ogp-result-11.png',
-  召喚士:       '/ogp/ogp-result-12.png',
-  ネクロマンサー: '/ogp/ogp-result-13.png',
-}
-
-const resultUrl = computed(() => `https://rpg-job-diagnosis.vercel.app/result/${route.params.id}`)
-const ogpImage = computed(() => {
-  const path = ogpImages[mainJob.value] ?? '/ogp/ogp-result-1.png'
-  return `https://rpg-job-diagnosis.vercel.app${path}`
-})
+const resultUrl = computed(() => `${BASE_URL}/result/${route.params.id}`)
+const ogpImage = computed(() => `${BASE_URL}${jobOgpImages[mainJob.value] ?? '/ogp/ogp-result-1.png'}`)
 
 useHead({
   title: computed(() => mainJob.value ? `${mainJob.value} - 職場RPGジョブ診断` : '職場RPGジョブ診断'),
