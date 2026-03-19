@@ -35,7 +35,7 @@ const resultUrl = computed(() => `${BASE_URL}/result/${route.params.id}`)
 const ogpImage = computed(() => `${BASE_URL}${jobOgpImages[mainJob.value] ?? '/ogp/ogp-result-1.png'}`)
 
 useHead({
-  title: computed(() => mainJob.value ? `${mainJob.value} - 職場RPGジョブ診断` : '職場RPGジョブ診断'),
+  title: computed(() => mainJob.value ? `${mainJob.value} - ファンタジージョブ診断` : 'ファンタジージョブ診断'),
   meta: computed(() => [
     { property: 'og:title', content: 'ファンタジージョブ診断' },
     { property: 'og:description', content: mainJob.value ? `あなたのジョブは…「${mainJob.value}」` : 'ファンタジージョブ診断' },

@@ -21,7 +21,7 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: '職場RPGジョブ診断',
+      title: 'ファンタジージョブ診断',
       meta: [
         { name: 'description', content: '11の質問に答えて、あなたの職場でのRPGジョブを診断しよう' },
         { property: 'og:site_name', content: 'ファンタジージョブ診断' },

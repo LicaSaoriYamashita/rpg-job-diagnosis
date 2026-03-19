@@ -10,7 +10,7 @@ const info = computed(() => jobData[jobName.value])
 const englishName = computed(() => jobEnglishNames[jobName.value] || jobName.value)
 
 useHead({
-  title: computed(() => `${jobName.value} - 職場RPGジョブ診断`),
+  title: computed(() => `${jobName.value} - ファンタジージョブ診断`),
 })
 </script>
 
