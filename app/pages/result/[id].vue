@@ -37,8 +37,40 @@ async function copyUrl() {
   } catch {}
 }
 
+const ogpImages: Record<string, string> = {
+  僧侶:         '/ogp/ogp-result-1.png',
+  武闘家:       '/ogp/ogp-result-2.png',
+  戦士:         '/ogp/ogp-result-3.png',
+  魔法使い:     '/ogp/ogp-result-4.png',
+  遊び人:       '/ogp/ogp-result-5.png',
+  盗賊:         '/ogp/ogp-result-6.png',
+  賢者:         '/ogp/ogp-result-7.png',
+  忍者:         '/ogp/ogp-result-8.png',
+  勇者:         '/ogp/ogp-result-9.png',
+  ルーラー:     '/ogp/ogp-result-10.png',
+  踊り子:       '/ogp/ogp-result-11.png',
+  召喚士:       '/ogp/ogp-result-12.png',
+  ネクロマンサー: '/ogp/ogp-result-13.png',
+}
+
+const resultUrl = computed(() => `https://rpg-job-diagnosis.vercel.app/result/${route.params.id}`)
+const ogpImage = computed(() => {
+  const path = ogpImages[mainJob.value] ?? '/ogp/ogp-result-1.png'
+  return `https://rpg-job-diagnosis.vercel.app${path}`
+})
+
 useHead({
   title: computed(() => mainJob.value ? `${mainJob.value} - 職場RPGジョブ診断` : '職場RPGジョブ診断'),
+  meta: computed(() => [
+    { property: 'og:title', content: 'ファンタジージョブ診断' },
+    { property: 'og:description', content: mainJob.value ? `あなたのジョブは…「${mainJob.value}」` : 'ファンタジージョブ診断' },
+    { property: 'og:url', content: resultUrl.value },
+    { property: 'og:image', content: ogpImage.value },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:title', content: 'ファンタジージョブ診断' },
+    { name: 'twitter:description', content: mainJob.value ? `あなたのジョブは…「${mainJob.value}」` : 'ファンタジージョブ診断' },
+    { name: 'twitter:image', content: ogpImage.value },
+  ]),
 })
 </script>
 
