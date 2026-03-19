@@ -5,29 +5,25 @@ const route = useRoute()
 const { getResult } = useSupabase()
 
 const lastMainJob = useState<string | null>('lastMainJob', () => null)
-const loading = ref(true)
-const notFound = ref(false)
-const mainJob = ref('')
-const subJobs = ref<string[]>([])
-const rarity = ref<'RARE' | 'MIDDLE' | 'STANDARD'>('STANDARD')
 const copied = ref(false)
+
+const { data: resultData, status } = await useAsyncData(
+  `result-${route.params.id}`,
+  () => getResult(route.params.id as string)
+)
+
+const loading = computed(() => status.value === 'pending')
+const notFound = computed(() => status.value === 'success' && !resultData.value)
+const mainJob = computed(() => resultData.value?.main_job ?? '')
+const subJobs = computed(() => resultData.value?.sub_jobs ?? [])
+const rarity = computed(() => jobRarity[mainJob.value]?.tier ?? 'STANDARD')
+
+watchEffect(() => {
+  if (mainJob.value) lastMainJob.value = mainJob.value
+})
 
 const jobInfo = computed(() => jobData[mainJob.value])
 const englishName = computed(() => jobEnglishNames[mainJob.value] || mainJob.value)
-
-onMounted(async () => {
-  const data = await getResult(route.params.id as string)
-  if (!data) {
-    notFound.value = true
-    loading.value = false
-    return
-  }
-  mainJob.value = data.main_job
-  lastMainJob.value = data.main_job
-  subJobs.value = data.sub_jobs
-  rarity.value = jobRarity[data.main_job]?.tier || 'STANDARD'
-  loading.value = false
-})
 
 async function copyUrl() {
   try {
