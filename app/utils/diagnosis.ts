@@ -213,8 +213,9 @@ export function diagnose(answers: Record<string, string>): DiagnosisResult {
     tierIdx = 0
   }
 
-  // 【ミドル】盗賊：人脈力+問題把握力+調整力が全部上位
-  if (!job && topSkills.has('人脈力') && topSkills.has('問題把握力') && topSkills.has('調整力')) {
+  // 【ミドル】盗賊：人脈力+問題把握力+調整力が全部top4以内
+  const top4Skills = new Set(skillRanking.slice(0, 4).map(([s]) => s))
+  if (!job && top4Skills.has('人脈力') && top4Skills.has('問題把握力') && top4Skills.has('調整力')) {
     job = '盗賊'
     tierIdx = 1
   }
