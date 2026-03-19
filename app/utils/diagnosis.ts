@@ -182,13 +182,13 @@ export function diagnose(answers: Record<string, string>): DiagnosisResult {
     job = 'ネクロマンサー'
     tierIdx = 0
   }
-  // 【レア】勇者：意思決定力+実行力が上位
-  else if (topSkills.has('意思決定力') && topSkills.has('実行力')) {
+  // 【レア】勇者：意思決定力がtop3以内 かつ 実行力が上位
+  else if (skillRanking.slice(0, 3).some(([s]) => s === '意思決定力') && topSkills.has('実行力')) {
     job = '勇者'
     tierIdx = 0
   }
-  // 【レア】召喚士 vs ルーラー
-  else if ((skillScores['リソース活用力'] || 0) > 0 || (skillScores['戦略力'] || 0) > 0) {
+  // 【レア】召喚士 vs ルーラー：リソース活用力か戦略力が上位6に入っているとき
+  else if (topSkills.has('リソース活用力') || topSkills.has('戦略力')) {
     const resourceScore = skillScores['リソース活用力'] || 0
     const strategyScore = skillScores['戦略力'] || 0
     if (resourceScore > strategyScore) {
